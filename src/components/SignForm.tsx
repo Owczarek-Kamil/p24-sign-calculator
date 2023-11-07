@@ -105,7 +105,7 @@ export default function SignForm() {
   }, [selectedOption]);
 
   return (
-    <form className="relative min-h-[55rem] w-full max-w-layout rounded-lg bg-color-white px-6 pb-6 pt-11 drop-shadow-xl md:px-10.5 md:pb-10 md:pt-13">
+    <form className="relative min-h-[51.75rem] w-full max-w-layout rounded-lg bg-color-white px-6 pb-6 pt-11 drop-shadow-xl md:px-10.5 md:pb-10 md:pt-13">
       <DecorativeIcon />
       <FormHeader />
       <OptionPicker options={endpoints} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
@@ -119,7 +119,7 @@ export default function SignForm() {
             placeholder={param}
             name={param}
             onChange={changeHanlder}
-            className="rounded px-4 pb-3.5 pt-3.75 text-3.25/[1.4615em] text-color-graphite transition-all placeholder:text-color-ash md:text-3.75/[1.4666em]"
+            className="rounded bg-color-pearl px-4 pb-3.5 pt-3.75 text-3.25/[1.4615em] text-color-graphite transition-all placeholder:text-color-ash md:text-3.75/[1.4666em]"
           />
         ))}
       </div>

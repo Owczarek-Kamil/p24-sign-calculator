@@ -20,7 +20,7 @@ const config: Config = {
       "4xl": "1440px",
     },
     maxWidth: {
-      layout: "33.75rem", // 540px
+      layout: "64rem", // 1024px
     },
     spacing: {
       "0": "0",

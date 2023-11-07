@@ -23,7 +23,7 @@ export default function OptionPicker({ options, selectedOption, setSelectedOptio
             Choose an endpoint for which sign will be calculated
           </p>
         </div>
-        <Listbox.Button className="flex w-full items-center justify-between rounded px-4 pb-3.75 pt-3.5 transition-all md:px-6 md:py-3.25">
+        <Listbox.Button className="flex w-full items-center justify-between rounded bg-color-pearl px-4 pb-3.75 pt-3.5 transition-all md:px-6 md:py-3.25">
           <span className="text-3.25/[1.4615em] text-color-graphite transition-all md:text-3.75/[1.4666em]">
             {selectedOption.name}
           </span>
