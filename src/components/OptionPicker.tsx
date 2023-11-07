@@ -33,7 +33,7 @@ export default function OptionPicker({ options, selectedOption, setSelectedOptio
         </Listbox.Button>
         <div className="relative">
           <Transition as={Fragment} leave="transition ease-in" leaveFrom="opacity-100" leaveTo="opacity-0">
-            <Listbox.Options className="absolute inset-x-0 top-4 rounded-lg bg-color-white transition-all">
+            <Listbox.Options className="absolute inset-x-0 top-4 rounded-lg bg-color-white drop-shadow-lg transition-all">
               {options.map((option, index) => (
                 <Listbox.Option
                   key={index}

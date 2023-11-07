@@ -36,6 +36,16 @@ const transactionVerify = {
   crc: "",
 };
 
+const trnRegister = {
+  p24_session_id: "",
+  p24_merchant_id: 0,
+  p24_amount: 0,
+  p24_currency: "",
+  p24_crc: "",
+};
+
+const trnVerify = { p24_session_id: "", p24_order_id: 0, p24_amount: 0, p24_currency: "", p24_crc: "" };
+
 const mapParamsToFormState = (params: { [key: string]: string | number }): { [key: string]: boolean } => {
   const formStateObject: { [key: string]: boolean } = {};
   const keys = Object.keys(params);
@@ -57,7 +67,9 @@ export default function SignForm() {
     const givenInput = event.target.name;
     setSignParams((prevState) => ({
       ...prevState,
-      [givenInput]: ["merchantId", "orderId", "amount"].includes(givenInput)
+      [givenInput]: ["merchantId", "orderId", "amount", "p24_merchant_id", "p24_order_id", "p24_amount"].includes(
+        givenInput,
+      )
         ? Number(event.target.value)
         : event.target.value,
     }));
@@ -76,6 +88,16 @@ export default function SignForm() {
         setFormState(mapParamsToFormState({ ...transactionVerify }));
         break;
       }
+      case "/trnRegister": {
+        setSignParams({ ...trnRegister });
+        setFormState(mapParamsToFormState({ ...trnRegister }));
+        break;
+      }
+      case "/trnVerify": {
+        setSignParams({ ...trnVerify });
+        setFormState(mapParamsToFormState({ ...trnVerify }));
+        break;
+      }
       default:
         setSignParams({});
         break;
@@ -83,7 +105,7 @@ export default function SignForm() {
   }, [selectedOption]);
 
   return (
-    <form className="relative w-full max-w-layout rounded-lg bg-color-white px-6 pb-6 pt-11 drop-shadow-xl md:px-10.5 md:pb-10 md:pt-13">
+    <form className="relative min-h-[55rem] w-full max-w-layout rounded-lg bg-color-white px-6 pb-6 pt-11 drop-shadow-xl md:px-10.5 md:pb-10 md:pt-13">
       <DecorativeIcon />
       <FormHeader />
       <OptionPicker options={endpoints} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
@@ -106,7 +128,11 @@ export default function SignForm() {
           Control Sum
         </p>
         <p className="break-words text-3.25/[1.4615em] text-color-ash transition-all md:text-3.5/[1.4286em]">
-          {JSON.stringify(signParams)}
+          {["/register", "/verify"].includes(selectedOption.endpoint) && Object.keys(signParams)[0] === "sessionId" && (
+            <>{JSON.stringify(signParams)}</>
+          )}
+          {["/trnRegister", "/trnVerify"].includes(selectedOption.endpoint) &&
+            Object.keys(signParams)[0] === "p24_session_id" && <>{Object.values(signParams).join("|")}</>}
         </p>
       </div>
       {Object.values(formState).every((param) => param === true) && (
@@ -115,7 +141,12 @@ export default function SignForm() {
             Sign
           </p>
           <p className="break-words text-3.25/[1.4615em] text-color-ash transition-all md:text-3.5/[1.4286em]">
-            {CryptoJS.SHA384(JSON.stringify(signParams)).toString()}
+            {["/register", "/verify"].includes(selectedOption.endpoint) && (
+              <>{CryptoJS.SHA384(JSON.stringify(signParams)).toString()}</>
+            )}
+            {["/trnRegister", "/trnVerify"].includes(selectedOption.endpoint) && (
+              <> {CryptoJS.MD5(Object.values(signParams).join("|")).toString()} </>
+            )}
           </p>
         </div>
       )}
