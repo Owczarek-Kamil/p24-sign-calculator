@@ -57,8 +57,9 @@ export default function SignForm() {
     const givenInput = event.target.name;
     setSignParams((prevState) => ({
       ...prevState,
-      [givenInput]:
-        givenInput === ("merchantId" || "orderId" || "amount") ? Number(event.target.value) : event.target.value,
+      [givenInput]: ["merchantId", "orderId", "amount"].includes(givenInput)
+        ? Number(event.target.value)
+        : event.target.value,
     }));
     setFormState((prevState) => ({ ...prevState, [givenInput]: true }));
   };
@@ -67,12 +68,12 @@ export default function SignForm() {
     switch (selectedOption.endpoint) {
       case "/register": {
         setSignParams({ ...transactionRegister });
-        mapParamsToFormState({ ...transactionRegister });
+        setFormState(mapParamsToFormState({ ...transactionRegister }));
         break;
       }
       case "/verify": {
         setSignParams({ ...transactionVerify });
-        mapParamsToFormState({ ...transactionVerify });
+        setFormState(mapParamsToFormState({ ...transactionVerify }));
         break;
       }
       default:
