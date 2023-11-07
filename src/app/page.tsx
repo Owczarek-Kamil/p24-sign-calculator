@@ -1,5 +1,11 @@
 /** @format */
 
+import SignForm from "@/components/SignForm";
+
 export default function Homepage() {
-  return <></>;
+  return (
+    <main className="grid flex-1 place-items-center px-6">
+      <SignForm />
+    </main>
+  );
 }
