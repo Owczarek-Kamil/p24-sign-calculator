@@ -23,7 +23,7 @@ export default function OptionPicker({ options, selectedOption, setSelectedOptio
             Choose an endpoint for which sign will be calculated
           </p>
         </div>
-        <Listbox.Button className="flex w-full items-center justify-between rounded bg-color-pearl px-4 pb-3.75 pt-3.5 transition-all md:px-6 md:py-3.25">
+        <Listbox.Button className="flex w-full items-center justify-between rounded bg-color-pearl px-4 pb-3.75 pt-3.5 outline-none transition-all focus-visible:outline-color-purple md:px-6 md:py-3.25">
           <span className="text-3.25/[1.4615em] text-color-graphite transition-all md:text-3.75/[1.4666em]">
             {selectedOption.name}
           </span>
@@ -33,16 +33,14 @@ export default function OptionPicker({ options, selectedOption, setSelectedOptio
         </Listbox.Button>
         <div className="relative">
           <Transition as={Fragment} leave="transition ease-in" leaveFrom="opacity-100" leaveTo="opacity-0">
-            <Listbox.Options className="absolute inset-x-0 top-4 rounded-lg bg-color-white drop-shadow-lg transition-all">
+            <Listbox.Options className="absolute inset-x-0 top-4 rounded-lg bg-color-white outline-none outline-color-purple drop-shadow-lg transition-all">
               {options.map((option, index) => (
                 <Listbox.Option
                   key={index}
                   value={option}
-                  className="group flex cursor-pointer items-center justify-between border-b border-color-grey/20 px-4 py-3 last:border-color-grey/0 md:px-6 md:py-3.25"
+                  className="flex cursor-pointer items-center justify-between border-b border-color-grey/20 px-4 py-3 last:border-color-grey/0 hover:text-color-purple ui-active:font-semibold ui-active:text-color-purple ui-not-active:text-color-ash md:px-6 md:py-3.25"
                 >
-                  <span className="text-3.25/[1.4615em] text-color-ash transition-all group-hover:text-color-purple md:text-4/[1.4375em]">
-                    {option.name}
-                  </span>
+                  <span className="text-3.25/[1.4615em] transition-all md:text-4/[1.4375em]">{option.name}</span>
                   <div className="hidden text-3 text-color-purple ui-selected:block">
                     <FaCheck />
                   </div>

@@ -6,55 +6,25 @@ import { useState, useEffect } from "react";
 import DecorativeIcon from "./DecorativeIcon";
 import FormHeader from "./FormHeader";
 import OptionPicker from "./OptionPicker";
-import CryptoJS from "crypto-js";
+import SignDisplayer from "./SignDisplayer";
+import ControlSumDisplayer from "./ControlSumDisplayer";
+import { mapParamsToFormState } from "@/functions/mapParamsToFormState";
+import { inputIsNumberType } from "@/functions/inputIsNumberType";
+import { everyInputWasTouched } from "@/functions/everyInputWasTouched";
+import { transactionRegister, transactionVerify, trnRegister, trnVerify } from "@/constants/default-params";
 
 export type Endpoint = {
   name: string;
   endpoint: string;
+  hashAlgo: "SHA384" | "MD5";
 };
 
 const endpoints: Endpoint[] = [
-  { name: "REST API - /transaction/register", endpoint: "/register" },
-  { name: "REST API - /transaction/verify", endpoint: "/verify" },
-  { name: "SOAP 3.2 - /trnRegister", endpoint: "/trnRegister" },
-  { name: "SOAP 3.2 - /trnVerify", endpoint: "/trnVerify" },
+  { name: "REST API - /transaction/register", endpoint: "/register", hashAlgo: "SHA384" },
+  { name: "REST API - /transaction/verify", endpoint: "/verify", hashAlgo: "SHA384" },
+  { name: "SOAP 3.2 - /trnRegister", endpoint: "/trnRegister", hashAlgo: "MD5" },
+  { name: "SOAP 3.2 - /trnVerify", endpoint: "/trnVerify", hashAlgo: "MD5" },
 ];
-
-const transactionRegister = {
-  sessionId: "",
-  merchantId: 0,
-  amount: 0,
-  currency: "",
-  crc: "",
-};
-
-const transactionVerify = {
-  sessionId: "",
-  orderId: 0,
-  amount: 0,
-  currency: "",
-  crc: "",
-};
-
-const trnRegister = {
-  p24_session_id: "",
-  p24_merchant_id: 0,
-  p24_amount: 0,
-  p24_currency: "",
-  p24_crc: "",
-};
-
-const trnVerify = { p24_session_id: "", p24_order_id: 0, p24_amount: 0, p24_currency: "", p24_crc: "" };
-
-const mapParamsToFormState = (params: { [key: string]: string | number }): { [key: string]: boolean } => {
-  const formStateObject: { [key: string]: boolean } = {};
-  const keys = Object.keys(params);
-  keys.map((key) => {
-    formStateObject[key] = Boolean(params[key]);
-  });
-
-  return formStateObject;
-};
 
 export default function SignForm() {
   const [selectedOption, setSelectedOption] = useState<Endpoint>(endpoints[0]);
@@ -64,16 +34,14 @@ export default function SignForm() {
   );
 
   const changeHanlder: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    const givenInput = event.target.name;
+    const currentInputName = event.target.name;
+    const currentInputValue = event.target.value;
+
     setSignParams((prevState) => ({
       ...prevState,
-      [givenInput]: ["merchantId", "orderId", "amount", "p24_merchant_id", "p24_order_id", "p24_amount"].includes(
-        givenInput,
-      )
-        ? Number(event.target.value)
-        : event.target.value,
+      [currentInputName]: inputIsNumberType(currentInputName) ? Number(currentInputValue) : currentInputValue,
     }));
-    setFormState((prevState) => ({ ...prevState, [givenInput]: true }));
+    setFormState((prevState) => ({ ...prevState, [`${currentInputName}WasTouched`]: true }));
   };
 
   useEffect(() => {
@@ -112,44 +80,21 @@ export default function SignForm() {
       <p className="mb-4 text-3.25/[1.4615em] font-bold -tracking-[0.181px] text-color-graphite transition-all md:text-3.5/[1.4286em] md:-tracking-[0.194px]">
         Sign Parameters
       </p>
-      <div key={selectedOption.endpoint} className="mb-4 flex flex-col gap-4">
+      <div className="mb-4 flex flex-col gap-4">
         {Object.keys(signParams).map((param) => (
           <input
             key={param}
+            value={formState[`${param}WasTouched`] ? signParams[param] : ""}
             placeholder={param}
             name={param}
+            type={typeof signParams[param] === "string" ? "text" : "number"}
             onChange={changeHanlder}
-            className="rounded bg-color-pearl px-4 pb-3.5 pt-3.75 text-3.25/[1.4615em] text-color-graphite transition-all placeholder:text-color-ash md:text-3.75/[1.4666em]"
+            className="appearance-none rounded bg-color-pearl px-4 pb-3.5 pt-3.75 text-3.25/[1.4615em] text-color-graphite outline-none transition-all placeholder:text-color-ash focus-visible:outline-color-purple md:text-3.75/[1.4666em]"
           />
         ))}
       </div>
-      <div className="mb-4 space-y-0.75 transition-all md:space-y-0.5">
-        <p className="text-3.25/[1.4615em] font-bold -tracking-[0.181px] text-color-graphite transition-all md:text-3.5/[1.4286em] md:-tracking-[0.194px]">
-          Control Sum
-        </p>
-        <p className="break-words text-3.25/[1.4615em] text-color-ash transition-all md:text-3.5/[1.4286em]">
-          {["/register", "/verify"].includes(selectedOption.endpoint) && Object.keys(signParams)[0] === "sessionId" && (
-            <>{JSON.stringify(signParams)}</>
-          )}
-          {["/trnRegister", "/trnVerify"].includes(selectedOption.endpoint) &&
-            Object.keys(signParams)[0] === "p24_session_id" && <>{Object.values(signParams).join("|")}</>}
-        </p>
-      </div>
-      {Object.values(formState).every((param) => param === true) && (
-        <div className="mb-4 space-y-0.75 transition-all md:space-y-0.5">
-          <p className="text-3.25/[1.4615em] font-bold -tracking-[0.181px] text-color-graphite transition-all md:text-3.5/[1.4286em] md:-tracking-[0.194px]">
-            Sign
-          </p>
-          <p className="break-words text-3.25/[1.4615em] text-color-ash transition-all md:text-3.5/[1.4286em]">
-            {["/register", "/verify"].includes(selectedOption.endpoint) && (
-              <>{CryptoJS.SHA384(JSON.stringify(signParams)).toString()}</>
-            )}
-            {["/trnRegister", "/trnVerify"].includes(selectedOption.endpoint) && (
-              <> {CryptoJS.MD5(Object.values(signParams).join("|")).toString()} </>
-            )}
-          </p>
-        </div>
-      )}
+      <ControlSumDisplayer hashAlgo={selectedOption.hashAlgo} signParams={signParams} />
+      {everyInputWasTouched(formState) && <SignDisplayer hashAlgo={selectedOption.hashAlgo} signParams={signParams} />}
     </form>
   );
 }
