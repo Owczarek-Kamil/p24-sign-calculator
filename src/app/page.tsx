@@ -1,11 +1,11 @@
 /** @format */
 
-import SignForm from "@/components/SignForm";
+import FormTemplate from "@/components/templates/FormTemplate";
 
 export default function Homepage() {
   return (
-    <main className="grid flex-1 place-items-center px-6 py-12">
-      <SignForm />
+    <main className="grid flex-1 place-items-center p-6">
+      <FormTemplate />
     </main>
   );
 }
