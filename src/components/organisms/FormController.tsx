@@ -13,8 +13,8 @@ export type Endpoint = {
 };
 
 const endpoints: Endpoint[] = [
-  // { name: "REST API - /transaction/register", endpoint: "/register", hashAlgo: "SHA384" },
-  // { name: "REST API - /transaction/verify", endpoint: "/verify", hashAlgo: "SHA384" },
+  { name: "REST API - /transaction/register", endpoint: "/register", hashAlgo: "SHA384" },
+  { name: "REST API - /transaction/verify", endpoint: "/verify", hashAlgo: "SHA384" },
   { name: "SOAP 3.2 - /trnRegister", endpoint: "/trnRegister", hashAlgo: "MD5" },
   { name: "SOAP 3.2 - /trnVerify", endpoint: "/trnVerify", hashAlgo: "MD5" },
 ];
