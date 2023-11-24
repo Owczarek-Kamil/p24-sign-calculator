@@ -47,7 +47,7 @@ export default function InputsController({ fields, hashAlgo }: FormRESTRegisterP
       ))}
 
       <ControlSumLabel signParams={parsedValues} hashAlgo={hashAlgo} />
-      <Hash signParams={parsedValues} hashAlgo={hashAlgo} />
+      <Hash signParams={hashAlgo === "SHA384" ? parsedValues : watch()} hashAlgo={hashAlgo} />
     </>
   );
 }
