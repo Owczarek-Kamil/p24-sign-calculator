@@ -13,13 +13,17 @@ export const metadata: Metadata = {
   authors: [{ name: "Kamil Owczarek" }],
 };
 
-export const jost = Jost({
+const jost = Jost({
   subsets: ["latin"],
   variable: "--font-jost",
   fallback: ["system-ui"],
 });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <body className={`${jost.variable} flex min-h-screen min-w-[23.4375rem] bg-color-pearl font-jost`}>
